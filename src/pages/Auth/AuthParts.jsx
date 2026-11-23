@@ -15,11 +15,11 @@ export function AuthHeader({ badge, eyebrow, eyebrowIcon: Icon, title, subtitle,
         <span className="rounded-full bg-(--color-primary-soft) px-3 py-1 text-xs font-medium text-(--color-primary-dark)">{badge}</span>
       </div>
 
-      <p className="mt-6 flex items-center gap-1.5 text-sm font-medium text-(--color-primary)">
+      <p className="mt-6 flex items-center gap-1.5 text-[13px] font-bold text-(--color-primary)">
         {Icon && <Icon aria-hidden="true" />}
         {eyebrow}
       </p>
-      <h1 className="mt-1 text-3xl font-medium leading-tight sm:text-4xl">{title}</h1>
+      <h1 className="mt-1 text-3xl font-normal leading-tight sm:text-4xl">{title}</h1>
       {subtitle && <p className="mt-3 text-[15px] leading-7 text-(--color-muted)">{subtitle}</p>}
       {children}
     </header>
@@ -37,7 +37,7 @@ export const AuthInput = forwardRef(function AuthInput(
 
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-2 block text-sm font-bold">
+      <label htmlFor={id} className="mb-4 block text-sm font-bold">
         {label}
       </label>
       <TextField
