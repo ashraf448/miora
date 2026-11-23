@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdClose } from "react-icons/md";
 
-
 export default function Modal({ open, onClose, title, children, maxWidth = "max-w-2xl", labelledBy = "modal-title" }) {
   const panelRef = useRef(null);
 

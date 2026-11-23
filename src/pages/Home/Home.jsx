@@ -1,19 +1,21 @@
 
-import { useMemo } from "react";
+// import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
+import ExploreModal from "../../common/ExploreModal/ExploreModal";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaCheck, FaWind, FaArrowLeftLong } from "react-icons/fa6";
 import { PiChatBold } from "react-icons/pi";
 import { FaRegHeart } from "react-icons/fa";
 import { MdOutlineDarkMode } from "react-icons/md";
-import { LuLeaf, LuBookOpen, LuBrain, LuHeartHandshake } from "react-icons/lu";
+import { LuLeaf } from "react-icons/lu";
 
 import hero from "../../assets/images/hero.jpg";
-import { articles } from "../../data/articles";
+// import { articles } from "../../data/articles";
 import { moods, getMood, needsCalm, todayKey } from "../../data/moods";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import ArticleCover from "../../common/ArticleCover";
+// import ArticleCover from "../../common/ArticleCover";في حل افضل 
 import { Reveal, SectionHeading, Stagger, StaggerItem, scaleIn } from "../../common/Motion/Reveal";
 
 const tools = [
@@ -23,12 +25,12 @@ const tools = [
   { id: "habits", title: "العادات والسلوكيات", text: "استكشف العادات التي ترغب في فهمها أو تغييرها تدريجيًا.", icon: LuLeaf, tone: "bg-(--color-accent-orange) text-orange-500" },
 ];
 
-const destinations = [
-  { to: "/addiction", title: "فهم الإدمان", text: "أنواعه وعلاماته وخطوات عملية للبداية.", icon: LuBrain },
-  { to: "/relax", title: "تمارين الاسترخاء", text: "تنفّس واعٍ وتأريض في دقائق.", icon: FaWind },
-  { to: "/ai", title: "المساعد الذكي", text: "مساحة للحوار وتنظيم الأفكار.", icon: PiChatBold },
-  { to: "/journal", title: "مذكراتي", text: "اكتب لنفسك بدون أحكام.", icon: LuBookOpen },
-];
+// const destinations = [
+//   { to: "/addiction", title: "فهم الإدمان", text: "أنواعه وعلاماته وخطوات عملية للبداية.", icon: LuBrain },
+//   { to: "/relax", title: "تمارين الاسترخاء", text: "تنفّس واعٍ وتأريض في دقائق.", icon: FaWind },
+//   { to: "/ai", title: "المساعد الذكي", text: "مساحة للحوار وتنظيم الأفكار.", icon: PiChatBold },
+//   { to: "/journal", title: "مذكراتي", text: "اكتب لنفسك بدون أحكام.", icon: LuBookOpen },
+// ];
 
 const weekDays = () =>
   Array.from({ length: 7 }, (_, i) => {
@@ -46,8 +48,12 @@ export default function Home() {
   const selectedMoodData = getMood(selectedMood);
   const week = useMemo(() => weekDays(), []);
   const loggedDays = week.filter((d) => moodLog[d.key]).length;
+  const [exploreOpen, setExploreOpen] = useState(false);
 
-  const featured = articles.slice(0, 3);
+const closeExplore = useCallback(() => {
+  setExploreOpen(false);
+}, []);
+  // const featured = articles.slice(0, 3);
 
   return (
     <main>
@@ -91,19 +97,14 @@ export default function Home() {
           </p>
 
           <div className="animate-fade-up mt-8 flex flex-wrap items-center gap-3" style={{ "--delay": "240ms" }}>
-            <a
-              href="#checkin"
+            <button
+              type="button"
+              onClick={() => setExploreOpen(true)}
               className="inline-flex items-center gap-2 rounded-xl bg-(--color-primary) px-6 py-3 text-lg font-medium text-white shadow-(--shadow-lift) transition hover:bg-(--color-primary-dark)"
             >
               استكشف المنصة
               <FaArrowLeftLong />
-            </a>
-            <Link
-              to="/addiction"
-              className="rounded-xl border border-(--color-border) bg-(--color-surface) px-6 py-3 text-lg font-medium transition hover:border-(--color-primary) hover:text-(--color-primary)"
-            >
-              فهم الإدمان
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -134,11 +135,10 @@ export default function Home() {
                     htmlFor={`mood-${mood.id}`}
                     whileHover={{ y: -4 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`relative flex w-full cursor-pointer flex-col items-center gap-3 rounded-2xl border px-3 py-5 text-lg font-medium transition-colors duration-300 peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-(--color-primary) ${
-                      active
+                    className={`relative flex w-full cursor-pointer flex-col items-center gap-3 rounded-2xl border px-3 py-5 text-lg font-medium transition-colors duration-300 peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-(--color-primary) ${active
                         ? "border-(--color-primary) bg-(--color-primary-soft) text-(--color-primary)"
                         : "border-(--color-border) bg-(--color-background) hover:border-(--color-primary)"
-                    }`}
+                      }`}
                   >
                     <AnimatePresence>
                       {active && (
@@ -214,9 +214,8 @@ export default function Home() {
                   <li key={d.key} className="flex flex-col items-center gap-1.5">
                     <span
                       title={m?.label ?? "لم يُسجّل"}
-                      className={`grid h-11 w-11 place-items-center rounded-full text-xl ${
-                        m ? "bg-white shadow-(--shadow-card)" : "border border-dashed border-(--color-border) text-(--color-muted)"
-                      } ${d.key === today ? "ring-2 ring-(--color-primary)" : ""}`}
+                      className={`grid h-11 w-11 place-items-center rounded-full text-xl ${m ? "bg-white shadow-(--shadow-card)" : "border border-dashed border-(--color-border) text-(--color-muted)"
+                        } ${d.key === today ? "ring-2 ring-(--color-primary)" : ""}`}
                     >
                       {m ? m.emoji : "·"}
                     </span>
@@ -260,26 +259,7 @@ export default function Home() {
             </ol>
           </div>
         </Reveal>
-
-        <Stagger className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {destinations.map(({ to, title, text, icon: Icon }) => (
-            <StaggerItem key={to}>
-              <Link
-                to={to}
-                className="hover-lift group flex h-full flex-col rounded-(--radius-card) border border-(--color-border) bg-(--color-surface) p-5 shadow-(--shadow-card)"
-              >
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-(--color-primary-soft) text-xl text-(--color-primary) transition group-hover:bg-(--color-primary) group-hover:text-white">
-                  <Icon />
-                </span>
-                <h3 className="mt-4 text-xl font-bold">{title}</h3>
-                <p className="mt-1 flex-1 text-[15px] leading-7 text-(--color-muted)">{text}</p>
-                <span className="mt-4 inline-flex items-center gap-2 font-bold text-(--color-primary) transition-all group-hover:gap-3">
-                  ادخل <FaArrowLeftLong className="text-sm" />
-                </span>
-              </Link>
-            </StaggerItem>
-          ))}
-        </Stagger>
+ 
       </section>
 
       <section className="mx-auto w-full container px-6 py-16">
@@ -312,71 +292,7 @@ export default function Home() {
         </Stagger>
       </section>
 
-      <section className="mx-auto w-full container px-6 pb-20 pt-8">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeading
-            title="خطوات صغيرة لفهم نفسك بشكل أفضل"
-            text="معلومات عملية بلغة بسيطة تساعدك في مواقف الحياة اليومية."
-          />
-          <Link
-            to="/awareness"
-            className="rounded-lg border border-(--color-border) bg-(--color-surface) px-5 py-2.5 text-lg font-medium shadow-(--shadow-card) transition hover:border-(--color-primary) hover:text-(--color-primary)"
-          >
-            استكشف كل المحتوى
-          </Link>
-        </div>
-
-        <Stagger className="mt-10 grid gap-6 md:grid-cols-3">
-          {featured.map((article, i) => (
-            <StaggerItem
-              as="article"
-              key={article.id}
-              className="hover-zoom overflow-hidden rounded-(--radius-card) border border-(--color-border) bg-(--color-surface) shadow-(--shadow-card)"
-            >
-              <div className="relative aspect-4/3 overflow-hidden">
-                <ArticleCover article={article} index={i} />
-                <span className="absolute inset-e-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[15px] font-medium">
-                  {article.category}
-                </span>
-              </div>
-              <div className="p-7 text-start">
-                <p className="text-[15px] text-(--color-muted)">{article.readTime} دقائق قراءة</p>
-                <h3 className="mt-2 text-2xl font-semibold leading-snug">{article.title}</h3>
-                <p className="mt-2 text-lg leading-7 text-(--color-muted)">{article.description}</p>
-                <Link
-                  to={`/awareness/${article.id}`}
-                  className="mt-4 inline-flex items-center gap-2 text-lg font-semibold text-(--color-primary) transition-all hover:gap-3"
-                >
-                  اقرأ المقال
-                  <FaArrowLeftLong />
-                </Link>
-              </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </section>
-
-      <section className="mx-auto w-full container px-6 pb-24">
-        <Reveal className="flex flex-col items-start gap-5 rounded-3xl bg-(--color-primary-soft) p-8 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white text-2xl text-(--color-primary)">
-              <LuHeartHandshake />
-            </span>
-            <div>
-              <h2 className="text-2xl font-bold">مش لازم تعدّي ده لوحدك</h2>
-              <p className="mt-2 max-w-xl leading-8 text-(--color-muted)">
-                لو حاسس إن الوضع أكبر منك أو بتفكر في إيذاء نفسك، كلّم حد قريب منك أو اتصل بخطوط الدعم المجانية.
-              </p>
-            </div>
-          </div>
-          <Link
-            to="/help"
-            className="shrink-0 rounded-xl bg-(--color-primary) px-6 py-3 font-bold text-white shadow-(--shadow-lift) transition hover:bg-(--color-primary-dark)"
-          >
-            أرقام الدعم والمساعدة
-          </Link>
-        </Reveal>
-      </section>
+      <ExploreModal open={exploreOpen} onClose={closeExplore} />
     </main>
   );
 }

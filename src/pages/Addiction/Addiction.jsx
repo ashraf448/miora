@@ -529,7 +529,7 @@ export default function Addiction() {
       <div className="sticky top-22 z-30 mx-auto w-full container px-6 py-3">
         <nav
           aria-label="أنواع الإدمان"
-          className="flex gap-2 overflow-x-auto rounded-full border border-(--color-border) bg-white/85 p-2 shadow-(--shadow-card) backdrop-blur-md scrollbar-none"
+          className="flex gap-2 overflow-x-auto lg:justify-between rounded-full border border-(--color-border) bg-white/85 p-2 shadow-(--shadow-card) backdrop-blur-md scrollbar-none"
         >
           {addictionTypes.map((t) => {
             const isActive = active === t.id;

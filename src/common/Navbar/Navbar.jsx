@@ -81,15 +81,15 @@ export default function Navbar() {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-3 z-50 mx-auto w-full max-w-6xl px-4">
+    <header className="sticky top-3 z-50 mx-auto w-full max-w-[88rem] px-4">
       <motion.nav
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         aria-label="التنقل الرئيسي"
-        className={`flex items-center justify-between gap-3 rounded-full border border-(--color-border) px-4 py-2.5 backdrop-blur-md transition-all duration-300 md:px-6 ${
-          scrolled ? "bg-white/95 shadow-(--shadow-header)" : "bg-white/80 shadow-(--shadow-card)"
-        }`}
+        className={`flex items-center justify-between gap-3 rounded-full border border-white/40 px-4 py-2.5 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 md:px-6 ${
+  scrolled ? "bg-white/40 shadow-(--shadow-header)" : "bg-white/25 shadow-(--shadow-card)"
+}`}
       >
         <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="ميورا — الصفحة الرئيسية">
           <img src={logo} alt="" width="48" height="48" className="h-10 w-10 md:h-11 md:w-11" />
