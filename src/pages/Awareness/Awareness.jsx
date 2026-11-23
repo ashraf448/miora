@@ -448,7 +448,7 @@ export default function Awareness() {
       </section>
 
       <section className="mx-auto w-full container px-6 pb-24">
-        <div className="mb-10 px-8 flex flex-wrap justify-center gap-3" role="tablist" aria-label="التصنيفات">
+        <div className="mb-10 flex flex-wrap justify-center gap-3" role="tablist" aria-label="التصنيفات">
           {tabs.map((category) => {
             const isActive = activeCategory === category;
             return (
@@ -475,7 +475,7 @@ export default function Awareness() {
           })}
         </div>
 
-        <div className="mb-6 flex items-center px-10 justify-between">
+        <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold">المقالات التوعوية</h2>
           <p className="text-sm text-(--color-muted)" aria-live="polite">
             {filtered.length} مقال
@@ -483,7 +483,7 @@ export default function Awareness() {
         </div>
 
         {filtered.length > 0 ? (
-          <motion.div layout className="grid grid-cols-1 gap-6 px-2 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div layout className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
               {filtered.map((article, i) => {
                 const saved = bookmarks.includes(article.id);

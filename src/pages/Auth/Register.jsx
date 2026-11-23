@@ -37,7 +37,7 @@ export default function Register() {
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <AuthHeader badge="حساب جديد" eyebrow="ابدأ مساحتك" title="إنشاء حساب جديد" subtitle="انضم إلينا وابدأ رحلتك الآن." />
 
-      <div className="mt-8 grid items-start gap-x-4 gap-y-6 md:grid-cols-2">
+      <div className="mt-7 space-y-5">
         <AuthInput label="الاسم الكامل" icon={LuUser} autoComplete="name" placeholder="أدخل اسمك الكامل" error={errors.fullName?.message} {...field(register("fullName"))} />
         <AuthInput label="البريد الإلكتروني" icon={LuMail} type="email" ltr autoComplete="email" placeholder="name@example.com" error={errors.email?.message} {...field(register("email"))} />
         <AuthInput label="رقم الهاتف" icon={LuPhone} type="tel" ltr autoComplete="tel" placeholder="010xxxxxxxx" error={errors.phone?.message} {...field(register("phone"))} />
@@ -65,7 +65,7 @@ export default function Register() {
 
         <AuthInput label="تأكيد كلمة المرور" icon={LuLock} type="password" autoComplete="new-password" placeholder="أعد كتابة كلمة المرور" error={errors.confirmPassword?.message} {...field(register("confirmPassword"))} />
 
-        <div className="md:col-span-2">
+        <div>
           <Controller
             name="terms"
             control={control}
@@ -91,7 +91,7 @@ export default function Register() {
         </div>
       </div>
 
-      <Button type="submit" variant="contained" fullWidth disabled={isPending} sx={{ mt: 4, mx: "auto", display: "flex", maxWidth: 424 }}>
+      <Button type="submit" variant="contained" fullWidth disabled={isPending} sx={{ mt: 3 }}>
         {isPending ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
       </Button>
 
