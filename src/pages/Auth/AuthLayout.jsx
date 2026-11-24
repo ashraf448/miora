@@ -59,13 +59,17 @@ export default function AuthLayout() {
 
   return (
     <MuiRtlProvider>
-      <div className="flex items-center justify-center bg-[linear-gradient(to_bottom,var(--color-background),transparent_8rem),radial-gradient(ellipse_at_top_right,var(--color-primary-soft),transparent_55%)] px-4 py-10 md:py-14">
+      <div
+        className={`flex items-center justify-center bg-[linear-gradient(to_bottom,var(--color-background),transparent_8rem),radial-gradient(ellipse_at_top_right,var(--color-primary-soft),transparent_55%)] px-4 py-10 md:py-14 ${
+          isRegister ? "md:px-[7.75%]" : ""
+        }`}
+      >
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className={`grid w-full overflow-hidden rounded-3xl bg-(--color-surface) shadow-(--shadow-lift) ${
-            isRegister ? "max-w-6xl md:grid-cols-[2.5fr_1fr]" : "max-w-4xl md:grid-cols-2"
+            isRegister ? "max-w-[1600px] md:grid-cols-[2.5fr_1fr]" : "max-w-4xl md:grid-cols-2"
           }`}
         >
           <section className="p-6 sm:px-12 sm:py-10">
