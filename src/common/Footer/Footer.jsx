@@ -54,7 +54,7 @@ export default function Footer() {
         </Reveal>
       </div>
 
-      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-20 px-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-10 px-6 py-10 sm:grid-cols-2 lg:flex lg:justify-between">
         <div>
           <h3 className="mb-3 text-lg font-bold">ميورا</h3>
           <p className="max-w-xs text-sm leading-7 text-white/60">
@@ -62,12 +62,8 @@ export default function Footer() {
           </p>
         </div>
 
-        {columns.map((col, i) => (
-          <nav
-            key={col.title}
-            aria-label={col.title}
-            className={i === columns.length - 4 ? "lg:justify-self-end" : ""}
-          >
+        {columns.map((col) => (
+          <nav key={col.title} aria-label={col.title}>
             <h4 className="mb-3 text-base font-bold">{col.title}</h4>
             <ul className="space-y-2 text-[15px] text-white/60">
               {col.items.map((item) => (
