@@ -340,7 +340,7 @@
 // }
 
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaPhone, FaArrowLeftLong } from "react-icons/fa6";
@@ -494,23 +494,6 @@ function FaqItem({ q, a }) {
 
 export default function Addiction() {
   useDocumentTitle("فهم الإدمان");
-  const [active, setActive] = useState(addictionTypes[0].id);
-
-  // نبرز القسم الظاهر حاليًا في شريط التنقل
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActive(visible.target.id);
-      },
-      { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] }
-    );
-    addictionTypes.forEach((t) => {
-      const el = document.getElementById(t.id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <main>
@@ -523,38 +506,6 @@ export default function Addiction() {
          معلومات بسيطة عن الإدمان على المواد أو السلوكيات، وكيف تبدأ أنت أو من تحب طريق المساعدة. بلا أحكام، وبسرية.
         </p>
       </section>
-
-      {/* شريط الأنواع — لاصق أثناء التمرير */}
-      <div className="sticky top-22 z-30 mx-auto w-full container px-6 py-3">
-        <nav
-          aria-label="أنواع الإدمان"
-          className="flex gap-2 overflow-x-auto lg:justify-between rounded-full border border-(--color-border) bg-white/85 p-2 shadow-(--shadow-card) backdrop-blur-md scrollbar-none"
-        >
-          {addictionTypes.map((t) => {
-            const isActive = active === t.id;
-            return (
-              <a
-                key={t.id}
-                href={`#${t.id}`}
-                aria-current={isActive ? "true" : undefined}
-                onClick={() => setActive(t.id)}
-                className="relative shrink-0 rounded-full px-5 py-2 text-sm font-medium"
-              >
-                {isActive && (
-                  <motion.span
-                    layoutId="type-pill"
-                    className="absolute inset-0 rounded-full bg-(--color-primary)"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                  />
-                )}
-                <span className={`relative z-10 transition-colors ${isActive ? "text-white" : "text-(--color-muted) hover:text-(--color-primary)"}`}>
-                  {t.nav}
-                </span>
-              </a>
-            );
-          })}
-        </nav>
-      </div>
 
       <section className="mx-auto w-full container px-6 py-8">
         <Stagger className="grid gap-4 md:grid-cols-3">
