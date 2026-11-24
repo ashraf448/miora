@@ -88,7 +88,7 @@ export default function App() {
         position="top-center"
         toastOptions={{
           duration: 3500,
-          style: { fontFamily: "Tajawal, sans-serif", direction: "rtl", fontSize: "15px" },
+          style: { fontFamily: "Almarai, sans-serif", direction: "rtl", fontSize: "15px" },
         }}
       />
     </MotionConfig>

@@ -1,5 +1,4 @@
 @import "tailwindcss";
- /* @import url("@fontsource/tajawal"); */
 
  :root {
   --color-primary: #2a3b9e;
@@ -40,7 +39,7 @@
 }
 
 body {
-  font-family: 'Tajawal', sans-serif;
+  font-family: 'Almarai', sans-serif;
   background: var(--color-background);
   color: var(--color-ink);
   

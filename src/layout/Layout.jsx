@@ -38,7 +38,7 @@ export default function Layout() {
         toastOptions={{
           duration: 2800,
           style: {
-            fontFamily: "Tajawal, sans-serif",
+            fontFamily: "Almarai, sans-serif",
             direction: "rtl",
           },
         }}
