@@ -517,11 +517,10 @@ export default function Addiction() {
       <section className="mx-auto w-full container px-6 pb-4 pt-14 text-center">
         <p className="animate-fade-up mb-4 text-sm font-bold text-(--color-primary)">مساحة آمنة بدون أحكام.</p>
         <h1 className="animate-fade-up mx-auto max-w-2xl text-4xl font-bold leading-[1.3] md:text-5xl" style={{ "--delay": "70ms" }}>
-          افهم الإدمان بأنواعه، وابدأ بخطوة صغيرة
+         فهمٌ بلا لوم، ودعمٌ متاح
         </h1>
         <p className="animate-fade-up mx-auto mt-5 max-w-xl text-lg leading-8 text-(--color-muted)" style={{ "--delay": "140ms" }}>
-          الإدمان مش ضعف إرادة، هو حالة بتأثر على المخ والسلوك ومعاها بيتحسن الوضع بالدعم والعلاج. اختار النوع اللي عايز
-          تفهمه وشوف أمثلة وعلامات وطرق التعامل.
+         معلومات بسيطة عن الإدمان على المواد أو السلوكيات، وكيف تبدأ أنت أو من تحب طريق المساعدة. بلا أحكام، وبسرية.
         </p>
       </section>
 
