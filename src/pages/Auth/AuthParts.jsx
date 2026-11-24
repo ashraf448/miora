@@ -1,7 +1,9 @@
 import { forwardRef, useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
-import { LuEye, LuEyeOff, LuCheck, LuX } from "react-icons/lu";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import { LuEye, LuEyeOff, LuCheck, LuX, LuCalendar } from "react-icons/lu";
 import logo from "../../assets/images/miora.png";
 
 /** رأس النموذج: لوجو + شارة + عنوان فرعي + عنوان + وصف */
@@ -15,11 +17,11 @@ export function AuthHeader({ badge, eyebrow, eyebrowIcon: Icon, title, subtitle,
         <span className="rounded-full bg-(--color-primary-soft) px-3 py-1 text-xs font-medium text-(--color-primary-dark)">{badge}</span>
       </div>
 
-      <p className="mt-6 flex items-center gap-1.5 text-sm font-medium text-(--color-primary)">
+      <p className="mt-6 flex items-center gap-1.5 text-[13px] font-bold text-(--color-primary)">
         {Icon && <Icon aria-hidden="true" />}
         {eyebrow}
       </p>
-      <h1 className="mt-1 text-3xl font-medium leading-tight sm:text-4xl">{title}</h1>
+      <h1 className="mt-1 text-3xl font-normal leading-tight sm:text-4xl">{title}</h1>
       {subtitle && <p className="mt-3 text-[15px] leading-7 text-(--color-muted)">{subtitle}</p>}
       {children}
     </header>
@@ -37,7 +39,7 @@ export const AuthInput = forwardRef(function AuthInput(
 
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-2 block text-sm font-bold">
+      <label htmlFor={id} className="mb-4 block text-sm font-bold">
         {label}
       </label>
       <TextField
@@ -75,6 +77,48 @@ export const AuthInput = forwardRef(function AuthInput(
     </div>
   );
 });
+
+const dateFieldSx = {
+  "& .MuiPickersInputBase-root": {
+    flexDirection: "row-reverse",
+    gap: 4,
+    paddingInlineStart: "4px",
+    backgroundColor: "var(--color-background)",
+    borderRadius: "12px",
+    transition: "background-color .2s",
+    "&.Mui-focused": { backgroundColor: "#fff" },
+    "&:hover .MuiPickersOutlinedInput-notchedOutline": { borderColor: "var(--color-primary)" },
+  },
+  "& .MuiPickersOutlinedInput-notchedOutline": { borderColor: "var(--color-border)" },
+  "& .MuiPickersInputBase-sectionsContainer": { justifyContent: "flex-start", padding: "14px 0" },
+};
+
+const CalendarIcon = () => <LuCalendar />;
+
+export function AuthDateInput({ label, value, onChange, onBlur, error, className = "" }) {
+  const id = useId();
+
+  return (
+    <div className={className}>
+      <label htmlFor={id} className="mb-4 block text-sm font-bold">
+        {label}
+      </label>
+      <DatePicker
+        value={value ? dayjs(value) : null}
+        onChange={(date) => onChange(date?.isValid() ? date.format("YYYY-MM-DD") : "")}
+        format="DD/MM/YYYY"
+        maxDate={dayjs()}
+        openTo="year"
+        views={["year", "month", "day"]}
+        slots={{ openPickerIcon: CalendarIcon }}
+        slotProps={{
+          textField: { id, fullWidth: true, sx: dateFieldSx, error: !!error, helperText: error, onBlur },
+          openPickerButton: { sx: { p: 0, fontSize: 20, color: "var(--color-muted)" } },
+        }}
+      />
+    </div>
+  );
+}
 
 // ───── قوة كلمة المرور ─────
 const rules = [

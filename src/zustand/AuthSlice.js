@@ -57,13 +57,14 @@ const useAuth = create((set) => ({
     set({ isPendingRegister: true });
  
     try {
-      const { fullName, phone, gender, email, password } = data;
+      const { fullName, phone, birthDate, gender, email, password } = data;
  
       const res = await api.post("/auth/register", {
         userName: fullName.trim(),
         email,
         password,
         phone,
+        birthDate,
         gender,
       });
  
