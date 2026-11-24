@@ -375,23 +375,35 @@
 
 
 import { useDeferredValue, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoSearch } from "react-icons/io5";
 import { FaBookmark, FaRegBookmark, FaArrowLeftLong } from "react-icons/fa6";
 import { articles } from "../../data/articles";
+import { videos } from "../../data/videos";
+import { podcasts } from "../../data/podcasts";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import ArticleCover from "../../common/ArticleCover";
 import { Reveal } from "../../common/Motion/Reveal";
+import { normalizeArabic } from "../../utils/arabicSearch";
+import ContentTabs from "./ContentTabs";
+import MediaGrid from "./MediaGrid";
+import { contentTabs, countText } from "./tabsConfig";
 
 const ALL = "الكل";
 const SAVED = "المحفوظة";
-const categories = [ALL, ...new Set(articles.map((a) => a.category))];
+const mediaByType = { videos, podcasts };
+const topicsOf = (items) => [...new Set(items.map((item) => item.topic))];
+const articleCategories = [...new Set(articles.map((a) => a.category))];
+const matches = (text, needle) => !needle || normalizeArabic(text).includes(needle);
 
 export default function Awareness() {
   useDocumentTitle("المحتوى التوعوي");
 
+  const [params, setParams] = useSearchParams();
+  const tab = contentTabs.find((t) => t.id === params.get("type")) ?? contentTabs[0];
+  const type = tab.id;
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
   const [activeCategory, setActiveCategory] = useState(ALL);
@@ -400,17 +412,37 @@ export default function Awareness() {
   const toggleBookmark = (id) =>
     setBookmarks((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
-  const filtered = useMemo(() => {
-    const q = deferredSearch.trim().toLowerCase();
-    return articles.filter((a) => {
-      const matchesCategory =
-        activeCategory === ALL || (activeCategory === SAVED ? bookmarks.includes(a.id) : a.category === activeCategory);
-      const matchesSearch = !q || `${a.title} ${a.description} ${a.category}`.toLowerCase().includes(q);
-      return matchesCategory && matchesSearch;
-    });
-  }, [deferredSearch, activeCategory, bookmarks]);
+  const changeType = (id) => {
+    setParams(id === "articles" ? {} : { type: id }, { replace: true });
+    setActiveCategory(ALL);
+  };
 
-  const tabs = [...categories, SAVED];
+  const resetFilters = () => {
+    setSearch("");
+    setActiveCategory(ALL);
+  };
+
+  const needle = normalizeArabic(deferredSearch);
+
+  const filtered = useMemo(
+    () =>
+      articles.filter((a) => {
+        const matchesCategory =
+          activeCategory === ALL || (activeCategory === SAVED ? bookmarks.includes(a.id) : a.category === activeCategory);
+        return matchesCategory && matches(`${a.title} ${a.description} ${a.category}`, needle);
+      }),
+    [needle, activeCategory, bookmarks]
+  );
+
+  const filteredMedia = (mediaByType[type] ?? []).filter(
+    (item) =>
+      (activeCategory === ALL || item.topic === activeCategory) &&
+      matches(`${item.title} ${item.description} ${item.source} ${item.topic}`, needle)
+  );
+
+  const total = type === "articles" ? filtered.length : filteredMedia.length;
+  const categoryChips =
+    type === "articles" ? [ALL, ...articleCategories, SAVED] : [ALL, ...topicsOf(mediaByType[type])];
 
   return (
     <main>
@@ -420,12 +452,16 @@ export default function Awareness() {
           معرفة بسيطة، أثرها يمتد
         </h1>
         <p className="animate-fade-up mx-auto mt-5 max-w-2xl text-lg leading-8 text-(--color-muted) md:text-xl" style={{ "--delay": "140ms" }}>
-          اقرأ في وقتك، وخذ من كل موضوع ما يناسب لحظتك دون ضغط.
+          اقرأ أو شاهد أو استمع في وقتك، وخذ من كل موضوع ما يناسب لحظتك دون ضغط.
         </p>
 
-        <div className="animate-fade-up mx-auto mt-10 w-full max-w-2xl" style={{ "--delay": "210ms" }}>
+        <div className="animate-fade-up mt-10" style={{ "--delay": "210ms" }}>
+          <ContentTabs tabs={contentTabs} value={type} onChange={changeType} />
+        </div>
+
+        <div className="animate-fade-up mx-auto mt-4 w-full max-w-2xl" style={{ "--delay": "280ms" }}>
           <label className="flex items-center gap-3 rounded-full border border-(--color-border) bg-(--color-surface) px-5 py-3.5 shadow-(--shadow-card) transition focus-within:border-(--color-primary)">
-            <span className="sr-only">ابحث في المقالات</span>
+            <span className="sr-only">{tab.searchLabel}</span>
             <IoSearch className="shrink-0 text-xl text-(--color-muted)" />
             <input
               type="search"
@@ -448,15 +484,14 @@ export default function Awareness() {
       </section>
 
       <section className="mx-auto w-full container px-6 pb-24">
-        <div className="mb-10 flex flex-wrap justify-center gap-3" role="tablist" aria-label="التصنيفات">
-          {tabs.map((category) => {
+        <div className="mb-10 flex flex-wrap justify-center gap-3" role="group" aria-label="التصنيفات">
+          {categoryChips.map((category) => {
             const isActive = activeCategory === category;
             return (
               <button
                 key={category}
                 type="button"
-                role="tab"
-                aria-selected={isActive}
+                aria-pressed={isActive}
                 onClick={() => setActiveCategory(category)}
                 className="relative rounded-full border border-(--color-border) px-5 py-2.5 text-base transition-colors hover:border-(--color-primary)"
               >
@@ -476,13 +511,17 @@ export default function Awareness() {
         </div>
 
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold">المقالات التوعوية</h2>
+          <h2 className="text-xl font-bold">{tab.heading}</h2>
           <p className="text-sm text-(--color-muted)" aria-live="polite">
-            {filtered.length} مقال
+            {total === 0 ? tab.none : countText(total, tab.nouns)}
           </p>
         </div>
 
-        {filtered.length > 0 ? (
+        {tab.note && <p className="mb-6 max-w-2xl text-base leading-7 text-(--color-muted)">{tab.note}</p>}
+
+        {type !== "articles" ? (
+          <MediaGrid items={filteredMedia} tab={tab} onReset={resetFilters} />
+        ) : filtered.length > 0 ? (
           <motion.div layout className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
               {filtered.map((article, i) => {

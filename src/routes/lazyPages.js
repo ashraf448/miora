@@ -10,6 +10,7 @@ export const Home                 = lazyPage(() => import("../pages/Home/Home"))
 export const Addiction            = lazyPage(() => import("../pages/Addiction/Addiction"));
 export const Awareness            = lazyPage(() => import("../pages/Awareness/Awareness"));
 export const ArticleDetails       = lazyPage(() => import("../components/ArticleDetails"));
+export const MediaPage            = lazyPage(() => import("../pages/Awareness/MediaPage"));
 export const Relax                = lazyPage(() => import("../pages/Relax/Relax"));
 export const Assessments          = lazyPage(() => import("../pages/Assessments/Assessments"));
 export const Ai                   = lazyPage(() => import("../pages/Ai/Ai"));
