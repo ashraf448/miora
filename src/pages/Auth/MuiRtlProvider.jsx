@@ -16,7 +16,7 @@ const theme = createTheme({
     text: { primary: "#1b2140", secondary: "#5f6585" },
   },
   shape: { borderRadius: 12 },
-  typography: { fontFamily: '"Tajawal", system-ui, sans-serif' },
+  typography: { fontFamily: '"Almarai", system-ui, sans-serif' },
   components: {
     MuiOutlinedInput: {
       styleOverrides: {
