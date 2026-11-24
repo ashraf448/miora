@@ -36,7 +36,7 @@ export default function ArticleCover({ article, index = 0, className = "", imgCl
   return (
     <img
       src={article.image}
-      alt={article.title}
+      alt={article.imageAlt ?? article.title}
       loading="lazy"
       decoding="async"
       onError={() => setFailed(true)}

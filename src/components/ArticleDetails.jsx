@@ -259,13 +259,54 @@ export default function ArticleDetails() {
         {article.content.map((section, i) => (
           <Reveal as="section" key={section.heading} className="mb-10" delay={i === 0 ? 0 : 0.05}>
             <h2 className="mb-5 text-2xl font-bold text-(--color-primary)">{section.heading}</h2>
-            {section.paragraphs.map((p) => (
+            {section.paragraphs?.map((p) => (
               <p key={p} className="mb-4 text-lg leading-9">
                 {p}
               </p>
             ))}
+            {section.quote && (
+              <blockquote className="mt-6 rounded-2xl border-s-4 border-(--color-primary) bg-(--color-primary-soft) p-5 text-lg leading-9 text-(--color-primary-dark)">
+                {section.quote}
+              </blockquote>
+            )}
+            {section.exercise && (
+              <div className="mt-6 rounded-2xl border border-(--color-border) bg-(--color-surface) p-5 shadow-(--shadow-card)">
+                <h3 className="font-bold">تمرين عملي</h3>
+                <p className="mt-2 text-lg leading-9">{section.exercise}</p>
+              </div>
+            )}
+            {section.points && (
+              <ul className="list-disc ps-5 text-lg leading-9 marker:text-(--color-primary)">
+                {section.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            )}
           </Reveal>
         ))}
+
+        {article.sources && (
+          <p className="text-lg leading-9 text-(--color-muted)">
+            <span className="font-bold text-(--color-ink)">للاستزادة: </span>
+            {article.sources.map((source, i) => (
+              <span key={source.url}>
+                {i > 0 && " · "}
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-(--color-primary) underline underline-offset-4"
+                >
+                  {source.title}
+                </a>{" "}
+                ({source.org})
+                <span className="sr-only"> يفتح في نافذة جديدة</span>
+              </span>
+            ))}
+          </p>
+        )}
+
+        {article.reviewedBy && <p className="mt-4 text-base text-(--color-muted)">راجعه: {article.reviewedBy}</p>}
       </article>
 
       <Reveal className="mx-auto mt-14 max-w-3xl rounded-2xl bg-(--color-primary-soft) p-7 text-center">

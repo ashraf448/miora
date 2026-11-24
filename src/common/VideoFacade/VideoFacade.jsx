@@ -27,19 +27,6 @@ export default function VideoFacade({ videoId, title, badge, hint }) {
 
   const content = (
     <>
-      {videoId && (
-        <>
-          <img
-            src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
-            alt=""
-            width="480"
-            height="360"
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <span className="absolute inset-0 bg-(--color-sidebar)/30" />
-        </>
-      )}
       <span aria-hidden="true" className="absolute -bottom-35 -inset-s-20 h-80 w-80 rounded-full bg-white/6" />
       <span aria-hidden="true" className="absolute -top-22.5 -inset-e-15 h-60 w-60 rounded-full bg-white/6" />
       <span className="absolute inset-s-5 top-5 rounded-full border border-white/20 bg-white/14 px-3.5 py-1.5 text-[13px] text-white backdrop-blur-[6px]">
