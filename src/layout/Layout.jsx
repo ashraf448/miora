@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from "react";
-import { Outlet, ScrollRestoration, useNavigation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation, useNavigation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Navbar from "../common/Navbar/Navbar";
 import Footer from "../common/Footer/Footer";
@@ -8,6 +8,7 @@ import useAuth from "../zustand/AuthSlice";
 
 export default function Layout() {
   const navigation = useNavigation();
+  const { pathname } = useLocation();
   const isNavigating = navigation.state === "loading";
 
   useEffect(() => {
@@ -15,7 +16,13 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col" dir="rtl">
+    <div className="relative isolate flex min-h-screen flex-col" dir="rtl">
+      {pathname !== "/" && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[26rem] bg-[radial-gradient(ellipse_at_top,var(--color-primary-soft),transparent_65%)]"
+        />
+      )}
       {isNavigating && (
         <div
           className="fixed inset-x-0 top-0 z-[70] h-1 overflow-hidden bg-(--color-primary-soft)"
