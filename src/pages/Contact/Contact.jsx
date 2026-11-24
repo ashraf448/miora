@@ -78,7 +78,7 @@ export default function Contact() {
     `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(d.subject)}&body=${encodeURIComponent(`${d.message}\n\n— ${d.name} (${d.email})`)}`;
 
   return (
-    <main className="bg-[radial-gradient(ellipse_at_top,var(--color-primary-soft),transparent_60%)]">
+    <main>
       <section className="mx-auto w-full container px-6 pb-8 pt-14 text-center">
         <p className="animate-fade-up text-sm font-bold text-(--color-primary)">تواصل معنا</p>
         <h1 className="animate-fade-up mt-3 text-4xl font-medium leading-tight md:text-6xl" style={{ "--delay": "70ms" }}>

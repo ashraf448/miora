@@ -248,12 +248,12 @@ export default function Relax() {
 
   return (
     <main>
-      <section className="bg-[radial-gradient(ellipse_at_top,var(--color-primary-soft),transparent_65%)] px-6 pb-10 pt-16 text-center">
-        <p className="animate-fade-up text-lg font-bold text-(--color-primary)">تمارين الاسترخاء</p>
+      <section className="px-6 pb-10 pt-16 text-center">
+        <p className="animate-fade-up text-xl font-bold text-(--color-primary)">تمارين الاسترخاء</p>
         <h1 className="animate-fade-up mt-4 text-4xl font-bold leading-tight md:text-6xl" style={{ "--delay": "70ms" }}>
           دقيقتين تهدّي فيهم نفسك
         </h1>
-        <p className="animate-fade-up mx-auto mt-5 max-w-2xl text-lg leading-8 text-(--color-muted)" style={{ "--delay": "140ms" }}>
+        <p className="animate-fade-up mx-auto mt-5 max-w-2xl text-lg leading-8 text-(--color-muted) md:text-xl" style={{ "--delay": "140ms" }}>
           تمارين قصيرة تقدر تعملها في أي مكان، من غير أي أدوات.
         </p>
       </section>
