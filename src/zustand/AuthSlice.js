@@ -57,13 +57,13 @@ const useAuth = create((set) => ({
   set({ isPendingRegister: true });
 
   try {
-    const { firstName, lastName, phoneNumber, gender, email, password } = data;
+    const { firstName, lastName, phone, gender, email, password } = data;
 
     const res = await api.post("/api/user/register", {
       userName: `${firstName.trim()} ${lastName.trim()}`,
       email,
       password,
-      phoneNumber,
+      phoneNumber : phone,
       gender,
     });
 
@@ -198,7 +198,7 @@ const useAuth = create((set) => ({
     }
  
     try {
-      const res = await api.get("/auth/me");
+      const res = await api.get("/api/user/me");
       set({ currentUser: res.data.user });
     } catch {
       localStorage.removeItem("token");
