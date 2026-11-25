@@ -159,20 +159,24 @@ registerHandler: async (data) => {
   // =========================
  
   forgotPasswordHandler: async ({ email }) => {
-    set({ isPendingReset: true });
-    try {
-      if (MOCK) await mockDelay();
-      else await api.post("/user/forgot-password", { email });
-      toast.success("تم إرسال كود التأكيد إلى بريدك");
-      return { success: true };
-    } catch (error) {
-      const msg = error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
-      toast.error(msg);
-      return { success: false, message: msg };
-    } finally {
-      set({ isPendingReset: false });
+  set({ isPendingReset: true });
+  try {
+    if (MOCK) {
+      await mockDelay();
+    } else {
+      await api.post("/api/user/forgot-password", { email: email.trim() });
     }
-  },
+    toast.success("تم إرسال كود التأكيد إلى بريدك");
+    return { success: true };
+  } catch (error) {
+    const msg =
+      error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
+    toast.error(msg);
+    return { success: false, message: msg };
+  } finally {
+    set({ isPendingReset: false });
+  }
+},
  
   verifyOtpHandler: async ({ email, otp }) => {
     set({ isPendingReset: true });
@@ -193,21 +197,30 @@ registerHandler: async (data) => {
     }
   },
  
-  resetPasswordHandler: async ({ email, resetToken, password }) => {
-    set({ isPendingReset: true });
-    try {
-      if (MOCK) await mockDelay();
-      else await api.post("/user/reset-password", { email, resetToken, password });
-      toast.success("تم تغيير كلمة المرور بنجاح ✅");
-      return { success: true };
-    } catch (error) {
-      const msg = error.response?.data?.message || "تعذّر تغيير كلمة المرور، حاول مرة أخرى.";
-      toast.error(msg);
-      return { success: false, message: msg };
-    } finally {
-      set({ isPendingReset: false });
+ resetPasswordHandler: async ({ email, otp, resetToken, password, confirmPassword }) => {
+  set({ isPendingReset: true });
+  try {
+    if (MOCK) {
+      await mockDelay();
+    } else {
+      await api.post("/api/user/reset-password", {
+        email: email.trim(),
+        otp: (otp ?? resetToken)?.trim(),
+        password,
+        confirmPassword: confirmPassword ?? password,
+      });
     }
-  },
+    toast.success("تم تغيير كلمة المرور بنجاح ✅");
+    return { success: true };
+  } catch (error) {
+    const msg =
+      error.response?.data?.message || "تعذّر تغيير كلمة المرور، حاول مرة أخرى.";
+    toast.error(msg);
+    return { success: false, message: msg };
+  } finally {
+    set({ isPendingReset: false });
+  }
+},
  
   // =========================
   // LOGOUT
