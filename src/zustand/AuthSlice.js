@@ -22,7 +22,7 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     const url = err.config?.url ?? "";
-    const isAuthRequest = ["/auth/login", "/auth/register", "/auth/me"].some((p) => url.includes(p));
+    const isAuthRequest = ["/api/user/login", "/api/user/register", "/api/user/me"].some((p) => url.includes(p));
     if (err.response?.status === 401 && !isAuthRequest && localStorage.getItem("token")) {
       localStorage.removeItem("token");
       window.location.assign("/login");
@@ -59,7 +59,7 @@ const useAuth = create((set) => ({
   try {
     const { firstName, lastName, phoneNumber, gender, email, password } = data;
 
-    const res = await api.post("api/user/register", {
+    const res = await api.post("/api/user/register", {
       userName: `${firstName.trim()} ${lastName.trim()}`,
       email,
       password,
@@ -95,7 +95,7 @@ const useAuth = create((set) => ({
     try {
       const { email, password } = data;
  
-      const res = await api.post("api/user/login", { email, password });
+      const res = await api.post("/api/user/login", { email, password });
  
       const { token, user } = res.data;
  
