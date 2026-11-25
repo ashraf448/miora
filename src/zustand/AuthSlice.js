@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
  
 // axios instance بتاعت الفرونت
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://13.63.133.150/api" ,
+  baseURL: import.meta.env.VITE_API_URL || "/api",
   headers: { "Content-Type": "application/json" },
 });
 // ضيف التوكن تلقائياً في كل request
