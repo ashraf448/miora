@@ -99,7 +99,7 @@ registerHandler: async (data) => {
       confirmPassword,
     } = data;
 
-    const res = await api.post("/user/Register", {
+    const res = await api.post("/user/register", {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       email: email.trim(),
