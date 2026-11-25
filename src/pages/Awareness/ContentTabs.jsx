@@ -5,7 +5,7 @@ export default function ContentTabs({ tabs, value, onChange }) {
     <div
       role="tablist"
       aria-label="نوع المحتوى"
-      className="mx-auto grid max-w-2xl grid-cols-3 gap-1 rounded-full border border-(--color-border) bg-(--color-surface) p-1.5 shadow-(--shadow-card)"
+      className="mx-auto grid max-w-4xl grid-cols-3 gap-1 rounded-full border border-(--color-border) bg-(--color-surface) p-1.5 shadow-(--shadow-card)"
     >
       {tabs.map((tab) => {
         const isActive = value === tab.id;
@@ -16,7 +16,7 @@ export default function ContentTabs({ tabs, value, onChange }) {
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(tab.id)}
-            className="relative rounded-full py-3 text-lg font-bold"
+            className="relative min-w-0 rounded-full px-2 py-3 text-sm font-bold leading-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary) sm:px-3 sm:text-base md:py-3.5 md:text-lg"
           >
             {isActive && (
               <motion.span

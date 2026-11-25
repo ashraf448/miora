@@ -6,10 +6,10 @@ const EMBED_ORIGIN = "https://www.youtube-nocookie.com";
 const CARD =
   "relative block aspect-video w-full overflow-hidden rounded-3xl bg-[linear-gradient(135deg,var(--color-sidebar),var(--color-primary))] shadow-(--shadow-lift)";
 
-export default function VideoFacade({ videoId, title, badge, hint }) {
-  const [playing, setPlaying] = useState(false);
+export default function VideoFacade({ videoId, title, badge, hint, autoPlay = false }) {
+  const [playing, setPlaying] = useState(autoPlay);
 
-  if (playing) {
+  if (playing && videoId) {
     return (
       <div className={CARD}>
         <iframe

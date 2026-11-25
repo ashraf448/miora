@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { FaPlay, FaPause, FaRotateLeft, FaCheck } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+import { FaPlay, FaPause, FaRotateLeft } from "react-icons/fa6";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import { Reveal } from "../../common/Motion/Reveal";
 
@@ -169,71 +170,234 @@ function Breathing() {
   );
 }
 
-const groundingSteps = [
-  { n: 5, text: "اذكر 5 حاجات بتشوفها حواليك" },
-  { n: 4, text: "المس 4 حاجات وحس بملمسها" },
-  { n: 3, text: "اسمع 3 أصوات مختلفة" },
-  { n: 2, text: "اشمّ حاجتين" },
-  { n: 1, text: "تذوّق حاجة واحدة أو خد رشفة مياه ببطء" },
+const thoughtExamples = ["أنا فاشل", "أنا ضعيف قدام الرغبة", "مش هعرف أتغيّر", "محدش فاهمني"];
+
+const challengeSteps = [
+  {
+    key: "thought",
+    type: "text",
+    title: "إيه الفكرة اللي مضايقاك؟",
+    hint: "اكتبها زي ما جاتلك، أو اختار من الأمثلة تحت.",
+    placeholder: "اكتب الفكرة هنا...",
+  },
+  {
+    key: "evidence",
+    type: "choice",
+    title: "فيه دليل إن الفكرة دي صح؟",
+    hint: "فكّر في الوقائع الفعلية، مش في الإحساس.",
+    options: [
+      "أيوه، فيه وقائع واضحة بتثبتها",
+      "فيه شوية، بس مش كل الصورة",
+      "لا، هي إحساس أكتر منها حقيقة",
+      "مش متأكد",
+    ],
+  },
+  {
+    key: "friend",
+    type: "choice",
+    title: "لو صاحبك مكانك، كنت هتقوله إيه؟",
+    hint: "غالبًا بنكون أرحم مع اللي بنحبهم من نفسنا.",
+    options: [
+      "إنه بيحاول، وده كفاية دلوقتي",
+      "إن غلطة واحدة ما بتحددش قيمته",
+      "إنه يستاهل يكون لطيف مع نفسه",
+      "إن اللي بيحصله بيحصل مع ناس كتير",
+    ],
+  },
+  {
+    key: "alternative",
+    type: "choice",
+    title: "فيه تفسير تاني ممكن؟",
+    hint: "اختار الأقرب لموقفك.",
+    options: [
+      "الظروف كانت صعبة، مش أنا المشكلة",
+      "كنت تعبان أو مضغوط وقتها",
+      "لسه بتعلّم، وده طبيعي",
+      "الموضوع أصغر مما شايفه دلوقتي",
+    ],
+  },
+  {
+    key: "reframe",
+    type: "choice",
+    title: "اختار جملة أهدى بدل الفكرة",
+    hint: "اختار اللي تقدر تصدّقها، أو اكتب جملتك بنفسك.",
+    options: [
+      "أنا بتعلّم، والتعثّر جزء من الطريق",
+      "اللي حصل موقف، مش حكم عليّا",
+      "أقدر أتعامل مع ده خطوة خطوة",
+      "أنا أستاهل نفس اللطف اللي بديه للناس",
+    ],
+    placeholder: "أو اكتب جملتك هنا...",
+  },
 ];
 
-function Grounding() {
-  const [done, setDone] = useState([]);
-  const toggle = (n) => setDone((d) => (d.includes(n) ? d.filter((x) => x !== n) : [...d, n]));
-  const finished = done.length === groundingSteps.length;
+const emptyAnswers = Object.fromEntries(challengeSteps.map((s) => [s.key, ""]));
+const recapSteps = challengeSteps.filter((s) => s.key === "evidence" || s.key === "friend" || s.key === "alternative");
+
+function ThoughtChallenge() {
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState(emptyAnswers);
+
+  const finished = index === challengeSteps.length;
+  const step = challengeSteps[index];
+  const value = step ? answers[step.key] : "";
+  const isLast = index === challengeSteps.length - 1;
+  const setAnswer = (key, text) => setAnswers((a) => ({ ...a, [key]: text }));
+
+  const restart = () => {
+    setAnswers(emptyAnswers);
+    setIndex(0);
+  };
 
   return (
-    <div className="mx-auto container">
-      <h2 className="text-2xl font-bold">تمرين التأريض 5-4-3-2-1</h2>
+    <div className="mx-auto max-w-2xl">
+      <h2 className="text-2xl font-bold">تحدّي الفكرة</h2>
       <p className="mt-3 leading-8 text-(--color-muted)">
-        بيرجّعك للحظة الحالية لما الأفكار تسرح أو القلق يزيد. خد وقتك في كل خطوة وعلّم عليها.
+        تمرين من العلاج المعرفي السلوكي: بتفحص الفكرة المضايقاك بدل ما تصدّقها على طول، وتوصل لجملة أهدى. اللي بتختاره وبتكتبه بيفضل في الصفحة دي بس ومش بيتحفظ.
       </p>
 
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-(--color-primary-soft)" role="progressbar" aria-valuenow={done.length} aria-valuemin={0} aria-valuemax={5}>
-        <motion.div className="h-full bg-(--color-primary)" animate={{ width: `${(done.length / 5) * 100}%` }} />
+      <div
+        className="mt-4 h-2 overflow-hidden rounded-full bg-(--color-primary-soft)"
+        role="progressbar"
+        aria-valuenow={index}
+        aria-valuemin={0}
+        aria-valuemax={challengeSteps.length}
+      >
+        <motion.div className="h-full bg-(--color-primary)" animate={{ width: `${(index / challengeSteps.length) * 100}%` }} />
       </div>
 
-      <ul className="mt-6 space-y-3">
-        {groundingSteps.map((s) => {
-          const checked = done.includes(s.n);
-          return (
-            <li key={s.n}>
+      <AnimatePresence mode="wait">
+        {finished ? (
+          <motion.div
+            key="result"
+            role="status"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mt-6 space-y-4"
+          >
+            <div className="rounded-2xl border border-(--color-border) bg-(--color-surface) p-5">
+              <p className="text-sm font-bold text-(--color-muted)">الفكرة اللي كانت مضايقاك</p>
+              <p className="mt-2 text-lg leading-8">{answers.thought}</p>
+              <ul className="mt-4 space-y-3 border-t border-(--color-border) pt-4">
+                {recapSteps.map((s) => (
+                  <li key={s.key}>
+                    <p className="text-sm text-(--color-muted)">{s.title}</p>
+                    <p className="mt-1 leading-7">{answers[s.key]}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-2xl bg-(--color-accent-green) p-5">
+              <p className="text-sm font-bold text-(--color-muted)">الجملة الأهدى</p>
+              <p className="mt-2 text-xl font-bold leading-8">{answers.reframe}</p>
+            </div>
+            <p className="text-center text-(--color-muted)">أحسنت 🌿 ارجع للجملة دي كل ما الفكرة القديمة تيجي تاني.</p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link to="/journal" className="rounded-full bg-(--color-primary) px-6 py-3 font-bold text-white transition hover:bg-(--color-primary-dark)">
+                اكتبها في مذكراتك
+              </Link>
+              <button type="button" onClick={restart} className="text-sm font-medium text-(--color-primary) hover:underline">
+                ابدأ فكرة جديدة
+              </button>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key={step.key}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+            className="mt-6"
+          >
+            <p className="text-sm text-(--color-muted)">
+              {index + 1} من {challengeSteps.length}
+            </p>
+            <h3 id="challenge-title" className="mt-2 text-xl font-bold leading-8">
+              {step.title}
+            </h3>
+            <p className="mt-2 leading-7 text-(--color-muted)">{step.hint}</p>
+
+            {index > 0 && !isLast && (
+              <p className="mt-4 rounded-xl bg-(--color-primary-soft) px-4 py-3 text-(--color-primary-dark)">
+                الفكرة: «{answers.thought}»
+              </p>
+            )}
+
+            {step.type === "choice" && (
+              <div className="mt-4 space-y-3" role="radiogroup" aria-labelledby="challenge-title">
+                {step.options.map((option) => {
+                  const selected = value === option;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      onClick={() => setAnswer(step.key, option)}
+                      className={`w-full rounded-2xl border p-4 text-start text-lg transition ${
+                        selected
+                          ? "border-(--color-primary) bg-(--color-primary-soft) font-bold text-(--color-primary)"
+                          : "border-(--color-border) bg-(--color-surface) hover:border-(--color-primary)"
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {(step.type === "text" || step.placeholder) && (
+              <>
+                {step.key === "thought" && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {thoughtExamples.map((example) => (
+                      <button
+                        key={example}
+                        type="button"
+                        onClick={() => setAnswer("thought", example)}
+                        className="rounded-full border border-(--color-border) bg-(--color-surface) px-4 py-1.5 text-sm transition hover:border-(--color-primary) hover:text-(--color-primary)"
+                      >
+                        {example}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <textarea
+                  aria-label={step.title}
+                  value={step.type === "text" || !step.options.includes(value) ? value : ""}
+                  onChange={(e) => setAnswer(step.key, e.target.value)}
+                  placeholder={step.placeholder}
+                  rows={step.type === "text" ? 3 : 2}
+                  maxLength={300}
+                  className="mt-4 w-full resize-y rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-lg leading-8 outline-none transition focus:border-(--color-primary)"
+                />
+              </>
+            )}
+
+            <div className="mt-4 flex items-center justify-between gap-4">
               <button
                 type="button"
-                aria-pressed={checked}
-                onClick={() => toggle(s.n)}
-                className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-start transition ${
-                  checked ? "border-(--color-primary) bg-(--color-primary-soft)" : "border-(--color-border) bg-(--color-surface) hover:border-(--color-primary)"
-                }`}
+                onClick={() => setIndex((i) => i - 1)}
+                disabled={index === 0}
+                className="text-sm font-medium text-(--color-primary) hover:underline disabled:invisible"
               >
-                <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full text-lg font-bold ${checked ? "bg-(--color-primary) text-white" : "bg-(--color-background) text-(--color-primary)"}`}>
-                  {checked ? <FaCheck /> : s.n}
-                </span>
-                <span className={`text-lg ${checked ? "text-(--color-primary)" : ""}`}>{s.text}</span>
+                السابق
               </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <AnimatePresence>
-        {finished && (
-          <motion.div
-            role="status"
-            initial={{ opacity: 0, y: 12, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="mt-6 rounded-2xl bg-(--color-accent-green) p-5 text-center"
-          >
-            <p className="text-lg font-bold">أحسنت 🌿</p>
-            <p className="mt-1 text-(--color-muted)">خد نفس عميق وكمّل يومك بهدوء. ممكن تعيد التمرين وقت ما تحتاج.</p>
+              <button
+                type="button"
+                onClick={() => setIndex((i) => i + 1)}
+                disabled={value.trim().length === 0}
+                className="rounded-full bg-(--color-primary) px-7 py-3 font-bold text-white transition hover:bg-(--color-primary-dark) disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLast ? "تم" : "التالي"}
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <button type="button" onClick={() => setDone([])} className="mt-5 text-sm font-medium text-(--color-primary) hover:underline">
-        إعادة التمرين
-      </button>
     </div>
   );
 }
@@ -243,7 +407,7 @@ export default function Relax() {
   const [tab, setTab] = useState("breathing");
   const tabs = [
     { id: "breathing", label: "تمرين التنفس" },
-    { id: "grounding", label: "تمرين التأريض" },
+    { id: "challenge", label: "تحدّي الفكرة" },
   ];
 
   return (
@@ -283,7 +447,7 @@ export default function Relax() {
         <Reveal>
           <AnimatePresence mode="wait">
             <motion.div key={tab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
-              {tab === "breathing" ? <Breathing /> : <Grounding />}
+              {tab === "breathing" ? <Breathing /> : <ThoughtChallenge />}
             </motion.div>
           </AnimatePresence>
         </Reveal>

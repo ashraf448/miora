@@ -3,7 +3,8 @@ import { EASE } from "../../common/Motion/Reveal";
 import MediaCard from "./MediaCard";
 import NoResults from "./NoResults";
 
-export default function MediaGrid({ items, tab, onReset }) {
+export default function MediaGrid({ items, tab, isEmpty, onReset }) {
+  if (isEmpty) return <NoResults title={tab.empty} text="" icon="🎬" />;
   if (items.length === 0) return <NoResults title={tab.none} resetLabel={tab.reset} onReset={onReset} />;
 
   return (
