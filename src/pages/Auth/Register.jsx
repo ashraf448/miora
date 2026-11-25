@@ -14,7 +14,10 @@ export default function Register() {
   const navigate = useNavigate();
   const registerHandler = useAuth((s) => s.registerHandler);
   const isPending = useAuth((s) => s.isPendingRegister);
-
+const GENDERS = [
+  { value: "male", label: "ذكر" },
+  { value: "female", label: "أنثى" },
+];
   const {
     register,
     handleSubmit,
@@ -49,10 +52,10 @@ export default function Register() {
             control={control}
             render={({ field: f }) => (
               <RadioGroup row value={f.value} onChange={f.onChange} onBlur={f.onBlur} sx={{ gap: 3, minHeight: 51, alignItems: "center" }}>
-                {["ذكر", "أنثى"].map((g) => (
-                  <FormControlLabel key={g} value={g} control={<Radio size="small" />} label={g} />
-                ))}
-              </RadioGroup>
+  {GENDERS.map((g) => (
+    <FormControlLabel key={g.value} value={g.value} control={<Radio size="small" />} label={g.label} />
+  ))}
+</RadioGroup>
             )}
           />
           {errors.gender && <FormHelperText error>{errors.gender.message}</FormHelperText>}

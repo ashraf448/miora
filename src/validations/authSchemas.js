@@ -30,7 +30,7 @@ export const registerSchema = matchPasswords(
   .string()
   .min(1, { message: "رقم الهاتف مطلوب" })
   .regex(/^01[0-25][0-9]{8}$/, { message: "رقم هاتف مصري غير صالح (مثال: 01012345678)" }),
-    gender: z.enum(["ذكر", "أنثى"], { message: "اختر الجنس" }),
+   gender: z.enum(["male", "female"], { message: "اختر الجنس" }),
     password,
     confirmPassword: z.string().min(1, { message: "تأكيد كلمة المرور مطلوب" }),
     terms: z.boolean().refine((v) => v, { message: "يجب الموافقة على الشروط والأحكام" }),
