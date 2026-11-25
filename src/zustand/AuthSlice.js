@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
  
 // axios instance بتاعت الفرونت
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || "http://13.63.133.150" ,
   headers: { "Content-Type": "application/json" },
 });
 // ضيف التوكن تلقائياً في كل request
@@ -54,37 +54,36 @@ const useAuth = create((set) => ({
   // =========================
  
   registerHandler: async (data) => {
-    set({ isPendingRegister: true });
- 
-    try {
-      const { fullName, phone, birthDate, gender, email, password } = data;
- 
-      const res = await api.post("/auth/register", {
-        userName: fullName.trim(),
-        email,
-        password,
-        phone,
-        birthDate,
-        gender,
-      });
- 
-      const { token, user } = res.data;
- 
-      localStorage.setItem("token", token);
-      set({ currentUser: user });
- 
-      toast.success("تم إنشاء حسابك بنجاح ✅");
-      return { success: true };
- 
-    } catch (error) {
-      const msg = error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
-      toast.error(msg);
-      return { success: false, message: msg };
- 
-    } finally {
-      set({ isPendingRegister: false });
-    }
-  },
+  set({ isPendingRegister: true });
+
+  try {
+    const { firstName, lastName, phone, gender, email, password } = data;
+
+    const res = await api.post("/auth/register", {
+      userName: `${firstName.trim()} ${lastName.trim()}`,
+      email,
+      password,
+      phone,
+      gender,
+    });
+
+    const { token, user } = res.data;
+
+    localStorage.setItem("token", token);
+    set({ currentUser: user });
+
+    toast.success("تم إنشاء حسابك بنجاح ✅");
+    return { success: true };
+
+  } catch (error) {
+    const msg = error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
+    toast.error(msg);
+    return { success: false, message: msg };
+
+  } finally {
+    set({ isPendingRegister: false });
+  }
+},
  
   // =========================
   // LOGIN

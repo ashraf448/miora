@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,7 +6,7 @@ import { LuMail, LuPhone, LuUser, LuLock } from "react-icons/lu";
 import { registerSchema } from "../../validations/authSchemas";
 import useAuth from "../../zustand/AuthSlice";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { AuthDateInput, AuthHeader, AuthInput, PasswordStrength } from "./AuthParts";
+import { AuthHeader, AuthInput, PasswordStrength } from "./AuthParts";
 import { field } from "./authHelpers";
 
 export default function Register() {
@@ -24,7 +23,7 @@ export default function Register() {
   } = useForm({
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
-    defaultValues: { fullName: "", email: "", phone: "", birthDate: "", gender: "", password: "", confirmPassword: "", terms: false },
+    defaultValues: { firstName: "", lastName: "", email: "", phone: "", gender: "", password: "", confirmPassword: "", terms: false },
   });
   const password = useWatch({ control, name: "password" });
 
@@ -38,18 +37,12 @@ export default function Register() {
       <AuthHeader badge="حساب جديد" eyebrow="ابدأ مساحتك" title="إنشاء حساب جديد" subtitle="انضم إلينا وابدأ رحلتك الآن." />
 
       <div className="mt-8 grid items-start gap-x-4 gap-y-9 md:grid-cols-2">
-        <AuthInput className="md:col-span-2" label="الاسم الكامل" icon={LuUser} autoComplete="name" placeholder="أدخل اسمك الكامل" error={errors.fullName?.message} {...field(register("fullName"))} />
+        <AuthInput label="الاسم الأول" icon={LuUser} autoComplete="given-name" placeholder="أدخل اسمك الأول" error={errors.firstName?.message} {...field(register("firstName"))} />
+        <AuthInput label="اسم العائلة" icon={LuUser} autoComplete="family-name" placeholder="أدخل اسم العائلة" error={errors.lastName?.message} {...field(register("lastName"))} />
         <AuthInput label="رقم الهاتف" icon={LuPhone} type="tel" ltr autoComplete="tel" placeholder="010xxxxxxxx" error={errors.phone?.message} {...field(register("phone"))} />
         <AuthInput label="البريد الإلكتروني" icon={LuMail} type="email" ltr autoComplete="email" placeholder="name@example.com" error={errors.email?.message} {...field(register("email"))} />
-        <Controller
-          name="birthDate"
-          control={control}
-          render={({ field: f }) => (
-            <AuthDateInput label="تاريخ الميلاد" value={f.value} onChange={f.onChange} onBlur={f.onBlur} error={errors.birthDate?.message} />
-          )}
-        />
 
-        <fieldset>
+        <fieldset className="md:col-span-2">
           <legend className="mb-4 block text-sm font-bold">الجنس</legend>
           <Controller
             name="gender"
