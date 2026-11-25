@@ -32,7 +32,7 @@ const GENDERS = [
 
   const onSubmit = async (data) => {
     const res = await registerHandler(data);
-    if (res.success) navigate("/", { replace: true });
+    if (res.success) navigate("VerifyOtp", { replace: true });
   };
 
   return (
