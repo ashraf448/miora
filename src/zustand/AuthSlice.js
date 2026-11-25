@@ -22,7 +22,7 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     const url = err.config?.url ?? "";
-    const isAuthRequest = ["/api/user/login", "/api/user/register", "/api/user/me"].some((p) => url.includes(p));
+    const isAuthRequest = ["/user/login", "/user/register", "/user/me"].some((p) => url.includes(p));
     if (err.response?.status === 401 && !isAuthRequest && localStorage.getItem("token")) {
       localStorage.removeItem("token");
       window.location.assign("/login");
@@ -53,38 +53,73 @@ const useAuth = create((set) => ({
   // REGISTER
   // =========================
  
-  registerHandler: async (data) => {
+//   registerHandler: async (data) => {
+//   set({ isPendingRegister: true });
+
+//   try {
+//     const { firstName, lastName, phone, gender, email, password } = data;
+
+//     const res = await api.post("/api/user/register", {
+//       userName: `${firstName.trim()} ${lastName.trim()}`,
+//       email,
+//       password,
+//       phoneNumber : phone,
+//       gender,
+//     });
+
+//     const { token, user } = res.data;
+
+//     localStorage.setItem("token", token);
+//     set({ currentUser: user });
+
+//     toast.success("تم إنشاء حسابك بنجاح ✅");
+//     return { success: true };
+
+//   } catch (error) {
+//     const msg = error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
+//     toast.error(msg);
+//     return { success: false, message: msg };
+
+//   } finally {
+//     set({ isPendingRegister: false });
+//   }
+// },
+ 
+registerHandler: async (data) => {
   set({ isPendingRegister: true });
 
   try {
-    const { firstName, lastName, phone, gender, email, password } = data;
-
-    const res = await api.post("/api/user/register", {
-      userName: `${firstName.trim()} ${lastName.trim()}`,
+    const {
+      firstName,
+      lastName,
+      phoneNumber,
+      gender,
       email,
       password,
-      phoneNumber : phone,
+      confirmPassword,
+    } = data;
+
+    const res = await api.post("/user/Register", {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      password,
+      confirmPassword: confirmPassword ?? password,
+      phoneNumber,
       gender,
     });
 
-    const { token, user } = res.data;
-
-    localStorage.setItem("token", token);
-    set({ currentUser: user });
-
-    toast.success("تم إنشاء حسابك بنجاح ✅");
-    return { success: true };
-
+    toast.success(res.data?.message || "تم إرسال كود التفعيل إلى بريدك الإلكتروني");
+    return { success: true, email };
   } catch (error) {
-    const msg = error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
+    const msg =
+      error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
     toast.error(msg);
     return { success: false, message: msg };
-
   } finally {
     set({ isPendingRegister: false });
   }
 },
- 
   // =========================
   // LOGIN
   // =========================
@@ -95,7 +130,7 @@ const useAuth = create((set) => ({
     try {
       const { email, password } = data;
  
-      const res = await api.post("/api/user/login", { email, password });
+      const res = await api.post("/user/login", { email, password });
  
       const { token, user } = res.data;
  
@@ -127,7 +162,7 @@ const useAuth = create((set) => ({
     set({ isPendingReset: true });
     try {
       if (MOCK) await mockDelay();
-      else await api.post("/auth/forgot-password", { email });
+      else await api.post("/user/forgot-password", { email });
       toast.success("تم إرسال كود التأكيد إلى بريدك");
       return { success: true };
     } catch (error) {
@@ -147,7 +182,7 @@ const useAuth = create((set) => ({
         if (otp !== MOCK_OTP) throw { response: { data: { message: `الكود غير صحيح (في الوضع التجريبي الكود هو ${MOCK_OTP})` } } };
         return { success: true, resetToken: "mock-token" };
       }
-      const res = await api.post("/auth/verify-otp", { email, otp });
+      const res = await api.post("/user/verify-otp", { email, otp });
       return { success: true, resetToken: res.data?.resetToken ?? otp };
     } catch (error) {
       const msg = error.response?.data?.message || "الكود غير صحيح أو انتهت صلاحيته.";
@@ -162,7 +197,7 @@ const useAuth = create((set) => ({
     set({ isPendingReset: true });
     try {
       if (MOCK) await mockDelay();
-      else await api.post("/auth/reset-password", { email, resetToken, password });
+      else await api.post("/user/reset-password", { email, resetToken, password });
       toast.success("تم تغيير كلمة المرور بنجاح ✅");
       return { success: true };
     } catch (error) {
@@ -198,7 +233,7 @@ const useAuth = create((set) => ({
     }
  
     try {
-      const res = await api.get("/api/user/me");
+      const res = await api.get("/user/me");
       set({ currentUser: res.data.user });
     } catch {
       localStorage.removeItem("token");
