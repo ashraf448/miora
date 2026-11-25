@@ -1,6 +1,6 @@
-export const kindLabel = { video: "فيديو", podcast: "بودكاست" };
-
 export const mediaPath = (item) => `/awareness/${item.kind}/${item.id}`;
+
+export const playPath = (item) => `${mediaPath(item)}?play=1`;
 
 export function excerpt(text, max = 150) {
   const first = text.split(/\n\s*\n/)[0].replace(/\s+/g, " ").trim();

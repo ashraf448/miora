@@ -381,7 +381,7 @@ import { IoSearch } from "react-icons/io5";
 import { FaBookmark, FaRegBookmark, FaArrowLeftLong } from "react-icons/fa6";
 import { articles } from "../../data/articles";
 import { videos } from "../../data/videos";
-import { podcasts } from "../../data/podcasts";
+import { addictionVideos } from "../../data/addictionVideos";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import ArticleCover from "../../common/ArticleCover";
@@ -393,7 +393,7 @@ import { contentTabs, countText } from "./tabsConfig";
 
 const ALL = "الكل";
 const SAVED = "المحفوظة";
-const mediaByType = { videos, podcasts };
+const mediaByType = { videos, addiction: addictionVideos };
 const topicsOf = (items) => [...new Set(items.map((item) => item.topic))];
 const articleCategories = [...new Set(articles.map((a) => a.category))];
 const matches = (text, needle) => !needle || normalizeArabic(text).includes(needle);
@@ -441,6 +441,7 @@ export default function Awareness() {
   );
 
   const total = type === "articles" ? filtered.length : filteredMedia.length;
+  const noMedia = type !== "articles" && mediaByType[type].length === 0;
   const categoryChips =
     type === "articles" ? [ALL, ...articleCategories, SAVED] : [ALL, ...topicsOf(mediaByType[type])];
 
@@ -513,14 +514,14 @@ export default function Awareness() {
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold">{tab.heading}</h2>
           <p className="text-sm text-(--color-muted)" aria-live="polite">
-            {total === 0 ? tab.none : countText(total, tab.nouns)}
+            {noMedia ? "" : total === 0 ? tab.none : countText(total, tab.nouns)}
           </p>
         </div>
 
         {tab.note && <p className="mb-6 max-w-2xl text-base leading-7 text-(--color-muted)">{tab.note}</p>}
 
         {type !== "articles" ? (
-          <MediaGrid items={filteredMedia} tab={tab} onReset={resetFilters} />
+          <MediaGrid items={filteredMedia} tab={tab} isEmpty={noMedia} onReset={resetFilters} />
         ) : filtered.length > 0 ? (
           <motion.div layout className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
