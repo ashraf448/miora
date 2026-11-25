@@ -26,10 +26,10 @@ export const registerSchema = matchPasswords(
     firstName: z.string().trim().min(2, { message: "الاسم الأول مطلوب" }),
     lastName: z.string().trim().min(2, { message: "اسم العائلة مطلوب" }),
     email,
-    phone: z
-      .string()
-      .min(1, { message: "رقم الهاتف مطلوب" })
-      .regex(/^01[0-25][0-9]{8}$/, { message: "رقم هاتف مصري غير صالح (مثال: 01012345678)" }),
+    phoneNumber: z
+  .string()
+  .min(1, { message: "رقم الهاتف مطلوب" })
+  .regex(/^01[0-25][0-9]{8}$/, { message: "رقم هاتف مصري غير صالح (مثال: 01012345678)" }),
     gender: z.enum(["ذكر", "أنثى"], { message: "اختر الجنس" }),
     password,
     confirmPassword: z.string().min(1, { message: "تأكيد كلمة المرور مطلوب" }),
