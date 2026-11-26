@@ -8,8 +8,7 @@ import { AuthHeader } from "./AuthParts";
 
 const LENGTH = 6;
 const RESEND_SECONDS = 60;
-const mmss = (s) =>
-  `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+const mmss = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
 export default function VerifyOtp() {
   useDocumentTitle("كود التأكيد");
