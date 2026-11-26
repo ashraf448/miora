@@ -159,24 +159,20 @@ registerHandler: async (data) => {
   // =========================
  
   forgotPasswordHandler: async ({ email }) => {
-  set({ isPendingReset: true });
-  try {
-    if (MOCK) {
-      await mockDelay();
-    } else {
-      await api.post("/user/forgot-password", { email: email.trim() });
+    set({ isPendingReset: true });
+    try {
+      if (MOCK) await mockDelay();
+      else await api.post("/user/forgot-password", { email });
+      toast.success("تم إرسال كود التأكيد إلى بريدك");
+      return { success: true };
+    } catch (error) {
+      const msg = error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
+      toast.error(msg);
+      return { success: false, message: msg };
+    } finally {
+      set({ isPendingReset: false });
     }
-    toast.success("تم إرسال كود التأكيد إلى بريدك");
-    return { success: true };
-  } catch (error) {
-    const msg =
-      error.response?.data?.message || "تعذّر الاتصال بالخادم، حاول مرة أخرى.";
-    toast.error(msg);
-    return { success: false, message: msg };
-  } finally {
-    set({ isPendingReset: false });
-  }
-},
+  },
  
   verifyOtpHandler: async ({ email, otp }) => {
     set({ isPendingReset: true });
