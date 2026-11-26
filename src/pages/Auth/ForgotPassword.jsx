@@ -23,7 +23,7 @@ export default function ForgotPassword() {
 
   const onSubmit = async ({ email }) => {
     const res = await forgotPasswordHandler({ email });
-    if (res.success) navigate("/verify-otp", { state: { email } });
+    if (res.success) navigate("/verify-otp", { state: { email, purpose: "reset" }, replace: true });
   };
 
   return (

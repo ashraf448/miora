@@ -30,10 +30,15 @@ const GENDERS = [
   });
   const password = useWatch({ control, name: "password" });
 
-  const onSubmit = async (data) => {
-    const res = await registerHandler(data);
-    if (res.success) navigate("/verify-otp", { state: { email: data.email }, replace: true });
-  };
+ const onSubmit = async (data) => {
+  const res = await registerHandler(data);
+  if (res.success) {
+    navigate("/verify-otp", {
+      state: { email: data.email, purpose: "register" },
+      replace: true,
+    });
+  }
+};
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>

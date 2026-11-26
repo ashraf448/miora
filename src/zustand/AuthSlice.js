@@ -150,7 +150,38 @@ registerHandler: async (data) => {
     }
   },
  
- 
+ verifyEmailHandler: async ({ email, otp }) => {
+  set({ isPendingReset: true });
+  try {
+    const res = await api.post("/user/verify-email", { email, otp });
+    const { token, user } = res.data;
+    if (token) localStorage.setItem("token", token);
+    if (user) set({ currentUser: user });
+    toast.success("تم تفعيل حسابك بنجاح ✅");
+    return { success: true };
+  } catch (error) {
+    const msg = error.response?.data?.message || "الكود غير صحيح أو انتهت صلاحيته.";
+    toast.error(msg);
+    return { success: false, message: msg };
+  } finally {
+    set({ isPendingReset: false });
+  }
+},
+
+resendVerificationHandler: async ({ email }) => {
+  set({ isPendingReset: true });
+  try {
+    await api.post("/user/resend-otp", { email });
+    toast.success("تم إرسال كود جديد إلى بريدك");
+    return { success: true };
+  } catch (error) {
+    const msg = error.response?.data?.message || "تعذّر إرسال الكود، حاول مرة أخرى.";
+    toast.error(msg);
+    return { success: false, message: msg };
+  } finally {
+    set({ isPendingReset: false });
+  }
+},
   // =========================
   // PASSWORD RECOVERY
   // وضع تجريبي بدون باك إند: ضع VITE_AUTH_MOCK=true في ملف .env (الكود الصحيح 123456)
