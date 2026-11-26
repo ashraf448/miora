@@ -203,7 +203,7 @@ registerHandler: async (data) => {
     if (MOCK) {
       await mockDelay();
     } else {
-      await api.post("/api/user/reset-password", {
+      await api.post("/user/reset-password", {
         email: email.trim(),
         otp: (otp ?? resetToken)?.trim(),
         password,
