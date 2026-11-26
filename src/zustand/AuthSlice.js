@@ -164,7 +164,7 @@ registerHandler: async (data) => {
     if (MOCK) {
       await mockDelay();
     } else {
-      await api.post("/api/user/forgot-password", { email: email.trim() });
+      await api.post("/user/forgot-password", { email: email.trim() });
     }
     toast.success("تم إرسال كود التأكيد إلى بريدك");
     return { success: true };
