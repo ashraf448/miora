@@ -8,12 +8,12 @@ import { AuthHeader } from "./AuthParts";
 
 const LENGTH = 6;
 const RESEND_SECONDS = 60;
-const mmss = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+const mmss = (s) =>
+  `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
 export default function VerifyOtp() {
   useDocumentTitle("كود التأكيد");
   const navigate = useNavigate();
-  // const email = useLocation().state?.email;
 
   const verifyOtpHandler = useAuth((s) => s.verifyOtpHandler);
   const forgotPasswordHandler = useAuth((s) => s.forgotPasswordHandler);
@@ -53,11 +53,12 @@ export default function VerifyOtp() {
     if (v && i < LENGTH - 1) refs.current[i + 1]?.focus();
   };
 
+  // الحاوية dir="ltr": الشمال = الخانة اللي قبلها، اليمين = الخانة اللي بعدها
   const onKeyDown = (i, e) => {
     if (e.key === "Backspace" && !digits[i] && i > 0)
       refs.current[i - 1]?.focus();
-    if (e.key === "ArrowLeft" && i < LENGTH - 1) refs.current[i + 1]?.focus();
-    if (e.key === "ArrowRight" && i > 0) refs.current[i - 1]?.focus();
+    if (e.key === "ArrowLeft" && i > 0) refs.current[i - 1]?.focus();
+    if (e.key === "ArrowRight" && i < LENGTH - 1) refs.current[i + 1]?.focus();
   };
 
   const onPaste = (e) => {
@@ -79,7 +80,8 @@ export default function VerifyOtp() {
 
     if (isRegister) {
       const res = await verifyEmailHandler({ email, otp });
-      if (res.success) navigate("/", { replace: true });
+      if (res.success)
+        navigate("/login", { replace: true, state: { verified: true } });
       else setError(res.message);
       return;
     }
@@ -97,17 +99,20 @@ export default function VerifyOtp() {
     const res = isRegister
       ? await resendVerificationHandler({ email })
       : await forgotPasswordHandler({ email });
-    if (res.success) {
+    if (res?.success) {
       setSeconds(RESEND_SECONDS);
       setDigits(Array(LENGTH).fill(""));
+      setError("");
       refs.current[0]?.focus();
+    } else if (res?.message) {
+      setError(res.message);
     }
   };
 
   return (
     <form onSubmit={submit} noValidate>
       <AuthHeader
-        badge="استعادة الحساب"
+        badge={isRegister ? "تأكيد الحساب" : "استعادة الحساب"}
         eyebrow=""
         title="اكتب كود التأكيد"
         subtitle="قم بكتابة الكود المرسل إلى الحساب التالي:"
@@ -194,4 +199,4 @@ export default function VerifyOtp() {
       </Button>
     </form>
   );
-};
+}
