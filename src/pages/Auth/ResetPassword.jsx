@@ -44,7 +44,7 @@ export default function ResetPassword() {
     });
 
     if (res.success) {
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
       return;
     }
 

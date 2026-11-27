@@ -81,7 +81,7 @@ export default function VerifyOtp() {
     if (isRegister) {
       const res = await verifyEmailHandler({ email, otp });
       if (res.success)
-        navigate("/login", { replace: true, state: { verified: true } });
+        navigate("/", { replace: true, state: { verified: true } });
       else setError(res.message);
       return;
     }
